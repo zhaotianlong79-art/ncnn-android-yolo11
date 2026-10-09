@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">yolo11ncnn</string>
+    <string name="app_name">YOLO Vision</string>
     <string-array name="task_array">
-        <item>coco</item>
-        <item>seg</item>
-        <item>pose</item>
-        <item>cls</item>
-        <item>obb</item>
+        <item>目标检测</item>
+        <item>实例分割</item>
+        <item>姿态估计</item>
+        <item>图像分类</item>
+        <item>旋转框检测</item>
     </string-array>
     <string-array name="model_array">
-        <item>n-320</item>
-        <item>s-320</item>
-        <item>m-320</item>
-        <item>n-480</item>
-        <item>s-480</item>
-        <item>m-480</item>
-        <item>n-640</item>
-        <item>s-640</item>
-        <item>m-640</item>
+        <item>Nano 320</item>
+        <item>Small 320</item>
+        <item>Medium 320</item>
+        <item>Nano 480</item>
+        <item>Small 480</item>
+        <item>Medium 480</item>
+        <item>Nano 640</item>
+        <item>Small 640</item>
+        <item>Medium 640</item>
     </string-array>
     <string-array name="cpugpu_array">
         <item>CPU</item>
         <item>GPU</item>
-        <item>turnip</item>
+        <item>Turnip GPU</item>
     </string-array>
 </resources>

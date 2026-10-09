@@ -18,16 +18,20 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.Surface;
+import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -59,10 +63,11 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
         cameraView = (SurfaceView) findViewById(R.id.cameraview);
 
+        cameraView.setZOrderMediaOverlay(true);
         cameraView.getHolder().setFormat(PixelFormat.RGBA_8888);
         cameraView.getHolder().addCallback(this);
 
-        Button buttonSwitchCamera = (Button) findViewById(R.id.buttonSwitchCamera);
+        TextView buttonSwitchCamera = (TextView) findViewById(R.id.buttonSwitchCamera);
         buttonSwitchCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -78,6 +83,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         });
 
         spinnerTask = (Spinner) findViewById(R.id.spinnerTask);
+        spinnerTask.setAdapter(createSpinnerAdapter(R.array.task_array));
+        spinnerTask.setBackgroundResource(0);
         spinnerTask.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long id)
@@ -96,6 +103,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         });
 
         spinnerModel = (Spinner) findViewById(R.id.spinnerModel);
+        spinnerModel.setAdapter(createSpinnerAdapter(R.array.model_array));
+        spinnerModel.setBackgroundResource(0);
         spinnerModel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long id)
@@ -114,6 +123,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         });
 
         spinnerCPUGPU = (Spinner) findViewById(R.id.spinnerCPUGPU);
+        spinnerCPUGPU.setAdapter(createSpinnerAdapter(R.array.cpugpu_array));
+        spinnerCPUGPU.setBackgroundResource(0);
         spinnerCPUGPU.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long id)
@@ -134,6 +145,57 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         reload();
     }
 
+    private ArrayAdapter<String> createSpinnerAdapter(int arrayResource)
+    {
+        String[] values = getResources().getStringArray(arrayResource);
+        return new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, values) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent)
+            {
+                TextView textView = convertView instanceof TextView
+                        ? (TextView) convertView
+                        : new TextView(MainActivity.this);
+                textView.setText(getItem(position));
+                textView.setTextColor(getColor(R.color.text_primary));
+                textView.setTextSize(13);
+                textView.setSingleLine(true);
+                textView.setEllipsize(TextUtils.TruncateAt.END);
+                textView.setGravity(Gravity.CENTER_VERTICAL);
+                textView.setPadding(0, 0, dp(2), 0);
+
+                Drawable arrow = getDrawable(R.drawable.ic_expand_more);
+                if (arrow != null)
+                {
+                    arrow.setTint(getColor(R.color.text_secondary));
+                    textView.setCompoundDrawablesWithIntrinsicBounds(null, null, arrow, null);
+                    textView.setCompoundDrawablePadding(dp(5));
+                }
+                return textView;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent)
+            {
+                TextView textView = convertView instanceof TextView
+                        ? (TextView) convertView
+                        : new TextView(MainActivity.this);
+                textView.setText(getItem(position));
+                textView.setTextColor(getColor(R.color.text_primary));
+                textView.setTextSize(13);
+                textView.setSingleLine(true);
+                textView.setGravity(Gravity.CENTER_VERTICAL);
+                textView.setPadding(dp(14), dp(12), dp(14), dp(12));
+                textView.setBackgroundColor(getColor(R.color.panel_background));
+                return textView;
+            }
+        };
+    }
+
+    private int dp(float value)
+    {
+        return (int) (value * getResources().getDisplayMetrics().density + 0.5f);
+    }
+
     private void reload()
     {
         boolean ret_init = yolo11ncnn.loadModel(getAssets(), current_task, current_model, current_cpugpu);
@@ -141,6 +203,11 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         {
             Log.e("MainActivity", "yolo11ncnn loadModel failed");
         }
+        TextView engineStatus = (TextView) findViewById(R.id.textEngineStatus);
+        engineStatus.setText(ret_init ? "识别引擎已就绪" : "模型加载失败，请更换配置");
+        View statusDot = findViewById(R.id.statusDot);
+        statusDot.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                getColor(ret_init ? R.color.accent : R.color.error)));
     }
 
     @Override

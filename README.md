@@ -1,56 +1,89 @@
-# ncnn-android-yolo11
+# YOLO11 NCNN Android — YOLO Vision
 
-![download](https://img.shields.io/github/downloads/nihui/ncnn-android-yolo11/total.svg)
+[![Upstream](https://img.shields.io/badge/upstream-nihui%2Fncnn--android--yolo11-blue)](https://github.com/nihui/ncnn-android-yolo11)
 
-The YOLO11 object detection
+这是一个基于 [nihui/ncnn-android-yolo11](https://github.com/nihui/ncnn-android-yolo11) 的 Android 实时目标识别示例。此 fork 在保留原有 YOLO11 + NCNN 推理功能的基础上，重新设计了应用界面。
 
-This is a sample ncnn android project, it depends on ncnn library and opencv
+## 本 fork 的界面改进
+
+- 深色主题、品牌标题和卡片式识别设置
+- 相机预览上的实时检测与 NCNN 引擎标记
+- 中文任务、模型规格和 CPU/GPU 选项
+- 模型加载状态提示，以及相机镜头切换
+
+检测、实例分割、姿态估计、图像分类和旋转框检测等任务，以及原项目提供的模型和推理实现，均来自上游项目。
+
+## 构建与安装
+
+使用 Android Studio 打开项目并构建，或在 macOS/Linux 上运行：
+
+```shell
+./gradlew assembleDebug
+```
+
+安装到已连接并开启 USB 调试的 Android 设备：
+
+```shell
+adb install -r app/build/outputs/apk/debug/com.tencent.yolo11ncnn-debug.apk
+```
+
+构建前需要按下方说明准备 Android NDK、NCNN、OpenCV Mobile 和可选的 Turnip 驱动依赖。
+
+## 上游项目说明
+
+本项目是一个依赖 NCNN 和 OpenCV 的 Android 示例，原项目及模型转换指南由上游维护。本 fork 的界面改动与上游推理引擎分别维护。
+
+上游项目：
+
+https://github.com/nihui/ncnn-android-yolo11
+
+依赖项目：
 
 https://github.com/Tencent/ncnn
 
 https://github.com/nihui/opencv-mobile
 
-https://github.com/nihui/mesa-turnip-android-driver  (mesa turnip driver)
+https://github.com/nihui/mesa-turnip-android-driver (Mesa Turnip 驱动)
 
-## android apk file download
+## 上游 APK 下载
 https://github.com/nihui/ncnn-android-yolo11/releases/latest
 
-## how to build and run
-### step1
+## 上游项目构建依赖
+### 1. NCNN
 https://github.com/Tencent/ncnn/releases
 
 * Download ncnn-YYYYMMDD-android-vulkan.zip or build ncnn for android yourself
 * Extract ncnn-YYYYMMDD-android-vulkan.zip into **app/src/main/jni** and change the **ncnn_DIR** path to yours in **app/src/main/jni/CMakeLists.txt**
 
-### step2
+### 2. OpenCV Mobile
 https://github.com/nihui/opencv-mobile
 
 * Download opencv-mobile-XYZ-android.zip
 * Extract opencv-mobile-XYZ-android.zip into **app/src/main/jni** and change the **OpenCV_DIR** path to yours in **app/src/main/jni/CMakeLists.txt**
 
-### step3
+### 3. Mesa Turnip (optional)
 https://github.com/nihui/mesa-turnip-android-driver
 
 * Download mesa-turnip-android-XYZ.zip
 * Create directory **app/src/main/jniLibs/arm64-v8a** if not exists
 * Extract `libvulkan_freedreno.so` from mesa-turnip-android-XYZ.zip into **app/src/main/jniLibs/arm64-v8a**
 
-### step4
-* Open this project with Android Studio, build it and enjoy!
+### 4. Build
+Open the project with Android Studio and build it, or use the Gradle command above.
 
-## some notes
+## 运行注意事项
 * Android ndk camera is used for best efficiency
 * Crash may happen on very old devices for lacking HAL3 camera interface
 * All models are manually modified to accept dynamic input shape
 * Most small models run slower on GPU than on CPU, this is common
 * FPS may be lower in dark environment because of longer camera exposure time
 
-## screenshot
+## 上游项目截图
 ![](screenshot0.jpg)
 ![](screenshot1.jpg)
 ![](screenshot2.jpg)
 
-## guidelines for converting YOLO11 models
+## YOLO11 模型转换指南（上游文档）
 
 ### 1. install
 
